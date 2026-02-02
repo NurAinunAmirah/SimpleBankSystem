@@ -21,6 +21,8 @@ public class SimpleBankSystem{
 			System.out.println("3. Deposit Money");
 			System.out.println("4. Withdraw Money");
 			System.out.println("5. Transfer Money");
+			System.out.println("6. Show Account Info");
+			System.out.println("7. Show stats");
 			System.out.println("Choose number to proceed to next action");
 			int code=input.nextInt();
 			input.nextLine();
@@ -41,9 +43,56 @@ public class SimpleBankSystem{
 				case 5:
 					transferMoney();
 					break;
+				case 6:
+					showInfo();
+					break;
+				case 7:
+					showStats();
+					break;
 				default:
 					System.out.println("you press incorrect option");
 			}			
+		}
+		
+	}
+	public static void showInfo(){
+		System.out.println("Enter customer name:");
+		String userName=input.nextLine();
+
+		List<Account> accounts= accountsByCustomer.get(userName);
+		for(Account n: accounts){
+			
+			System.out.println("User name: "+ userName);
+			System.out.println("Account number: "+n.getAccNo());
+			System.out.println("Balance: "+accountBalances.getOrDefault(n.getAccNo(),0.0));
+		}
+
+	}
+	public static void showStats(){
+		Map<String, Integer> stats= new HashMap<>();
+
+		for(Map<String, Double> transactions : accountTransaction.values()){
+			for (double amount: transactions.values()){
+				String type;
+
+				if(amount>0){
+					type="Deposit";
+				}else if(amount<0){
+					type="Withdraw";
+				}else{
+					continue;
+
+				}
+				stats.merge(type,1,Integer::sum);
+			}
+			if(stats.isEmpty()){
+				System.out.println("No transaction found");
+			}
+
+			System.out.println("Transaction Statistic");
+			for(Map.Entry<String, Integer>entry: stats.entrySet()){
+				System.out.println(entry.getKey()+" -> "+ entry.getValue());
+			}
 		}
 		
 	}
